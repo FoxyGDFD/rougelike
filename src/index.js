@@ -1,12 +1,12 @@
-(function () {
-  'use strict';
+'use strict';
 
-  window.$import = $import;
+function bootstrap() {
+  var PlayerVM = $import('@domain/characters/player/player.view-model');
+  var PlayerView = $import('@domain/characters/player/player.view');
 
+  var player = PlayerVM.createNew();
+  PlayerView(document.getElementById('player-container'), player);
 
-  console.log('Custom require function initialized with aliases:');
-  console.log(Object.keys($import.getAllAliases()));
+}
 
-  var Player = $import('@domain/characters/player').createNew();
-  console.log(Player)
-})()
+bootstrap();
