@@ -1,10 +1,10 @@
 var ClassFactory = {
   create: function (definition) {
     var constructor = definition.constructor || function () { };
-    var superClass = definition.extends;
+    var parentClass = definition.extends;
 
-    if (superClass) {
-      constructor.prototype = Object.create(superClass.prototype);
+    if (parentClass) {
+      constructor.prototype = Object.create(parentClass.prototype);
       constructor.prototype.constructor = constructor;
     }
 
