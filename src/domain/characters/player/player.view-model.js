@@ -1,20 +1,14 @@
 var Class = $import('@core/class')
 var PlayerModel = $import('./player.model')
 var computed = $import('@core/signal').computed
+var signal = $import('@core/signal').signal
+var isWalkable = $import('@lib/utils/is-walkable')
 
 var PlayerViewModel = Class.create({
-  constructor: function () {
+  constructor: function (stats) {
     this.__model__ = PlayerModel.createNew()
-    this.x = computed(
-      function () {
-        return this.__model__.x.value
-      }.bind(this)
-    )
-    this.y = computed(
-      function () {
-        return this.__model__.y.value
-      }.bind(this)
-    )
+    this.x = signal(stats.x || 0)
+    this.y = signal(stats.y || 0)
     this.health = computed(
       function () {
         return this.__model__.health.value
@@ -33,7 +27,8 @@ var PlayerViewModel = Class.create({
   },
   methods: {
     move: function (dx, dy) {
-      this.__model__.move(dx, dy)
+      this.x.value += dx
+      this.y.value += dy
     },
     takeDamage: function (amount) {
       this.__model__.setHealth(this.health.value - amount)
@@ -49,8 +44,14 @@ var PlayerViewModel = Class.create({
     },
   },
 })
-PlayerViewModel.createNew = function () {
-  return new PlayerViewModel()
+PlayerViewModel.createNew = function (map) {
+  var x, y
+  do {
+    x = Math.floor(Math.random() * map[0].length)
+    y = Math.floor(Math.random() * map.length)
+  } while (!isWalkable(x, y, map))
+
+  return new PlayerViewModel({ x: x, y: y })
 }
 
 module.exports = PlayerViewModel

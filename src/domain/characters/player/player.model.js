@@ -17,7 +17,7 @@ var PlayerModel = Class.create({
     },
     setHealth: function (amount) {
       if (amount > this.maxHealth) {
-        this.health.value = this.maxHealth;
+        this.health.value = this.maxHealth
       } else {
         this.health.value = amount
       }
