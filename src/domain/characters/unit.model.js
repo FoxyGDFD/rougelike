@@ -1,5 +1,5 @@
 var Class = $import('@core/class');
-var { signal } = $import('@core/signal')
+var signal = $import('@core/signal').signal;
 
 var Unit = Class.create({
   constructor: function (stats) {

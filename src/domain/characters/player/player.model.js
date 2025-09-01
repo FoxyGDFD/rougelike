@@ -1,6 +1,6 @@
 var Class = $import('@core/class');
 var Unit = $import('@domain/characters/unit.model');
-var { signal } = $import('@core/signal');
+var signal = $import('@core/signal').signal;
 
 var PlayerModel = Class.create({
   extends: Unit,
