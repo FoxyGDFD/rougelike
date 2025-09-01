@@ -1,19 +1,19 @@
-var Class = $import('@core/class');
-var Unit = $import('@domain/characters/unit.model');
-var signal = $import('@core/signal').signal;
+var Class = $import('@core/class')
+var Unit = $import('@domain/characters/unit.model')
+var signal = $import('@core/signal').signal
 
 var PlayerModel = Class.create({
   extends: Unit,
   constructor: function (stats) {
-    PlayerModel.__super__.constructor.call(this);
+    PlayerModel.__super__.constructor.call(this)
 
-    this.gold = signal(stats?.gold || 0);
-    this.inventory = signal(stats?.inventory || []);
+    this.gold = signal(stats?.gold || 0)
+    this.inventory = signal(stats?.inventory || [])
   },
   methods: {
     move: function (dx, dy) {
-      this.x.value += dx;
-      this.y.value += dy;
+      this.x.value += dx
+      this.y.value += dy
     },
     setHealth: function (amount) {
       if (amount > this.maxHealth) {
@@ -23,18 +23,18 @@ var PlayerModel = Class.create({
       }
     },
     setGold: function (amount) {
-      this.gold.value = amount;
+      this.gold.value = amount
     },
     addItem: function (item) {
-      var arr = this.inventory.value.slice();
-      arr.push(item);
-      this.inventory.value = arr;
-    }
-  }
-});
+      var arr = this.inventory.value.slice()
+      arr.push(item)
+      this.inventory.value = arr
+    },
+  },
+})
 
 PlayerModel.createNew = function () {
-  return new PlayerModel(0, 0);
-};
+  return new PlayerModel(0, 0)
+}
 
-module.exports = PlayerModel;
+module.exports = PlayerModel
