@@ -56,19 +56,41 @@ function loadModule(fullPath, requestPath) {
   var module = { exports: moduleExports };
   var moduleDir = fullPath.substring(0, fullPath.lastIndexOf('/'));
 
-  // локальная версия $import для этого модуля
   function localImport(path) {
     return $import(path, moduleDir);
   }
 
   try {
-    var code =
-      '(function(module, exports, __dirname, $import){' +
-      xhr.responseText +
-      '\n})(module, module.exports, "' + moduleDir + '", localImport);';
-    eval(code);
+    var code = xhr.responseText;
+
+    var moduleFunction = new Function(
+      'module', 'exports', '__dirname', '$import',
+      '\n//# sourceURL=' + fullPath + '\n' +
+      code
+    );
+
+    moduleFunction(module, module.exports, moduleDir, localImport);
   } catch (error) {
-    throw new Error('Error in module ' + requestPath + ': ' + error.message);
+    var errorMessage = 'Error loading module: ' + requestPath +
+      '\nFile: ' + fullPath;
+
+    if (error.stack) {
+      var stackLines = error.stack.split('\n');
+      for (var i = 0; i < stackLines.length; i++) {
+        if (stackLines[i].includes(fullPath)) {
+          errorMessage += '\nLocation: ' + stackLines[i].trim();
+          break;
+        }
+      }
+
+      if (i === stackLines.length) {
+        errorMessage += '\nStack: ' + error.stack;
+      }
+    } else {
+      errorMessage += '\nError: ' + error.message;
+    }
+
+    throw new Error(errorMessage);
   }
 
   moduleCache[fullPath] = module.exports;
@@ -79,14 +101,12 @@ function loadModule(fullPath, requestPath) {
 function $import(requestPath, parentDir) {
   var fullPath;
 
-  // относительный импорт
   if (requestPath.startsWith('./') || requestPath.startsWith('../')) {
     if (!parentDir) {
       throw new Error('Relative import "' + requestPath + '" used without parent context');
     }
     fullPath = resolvePath(parentDir, requestPath);
   } else {
-    // импорт через алиас
     if (!window.ALIASES) {
       throw new Error('Aliases not loaded. Make sure aliases.js is loaded first');
     }
@@ -101,12 +121,10 @@ function $import(requestPath, parentDir) {
     fullPath = window.joinPath(window.ALIASES[alias], modulePath);
   }
 
-  // добавляем .js, если расширение отсутствует
   if (!/\.js$/i.test(fullPath)) {
     fullPath += '.js';
   }
 
-  console.log(fullPath, requestPath)
   return loadModule(fullPath, requestPath);
 }
 
