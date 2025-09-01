@@ -1,32 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roguelike</title>
-  <script src="/src/config/aliases.js"></script>
-  <script src="/src/lib/core/import.js"></script>
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,700&amp;subset=cyrillic"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=cyrillic"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;subset=cyrillic"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i|Tinos:400,400i&amp;subset=cyrillic"
+      rel="stylesheet"
+    />
+    <!-- <script type="text/javascript" src="/shared/3rdparty/jquery/jquery.js" language="javascript1.1"></script> -->
+    <title>Roguelike</title>
+    <script src="/src/config/aliases.js"></script>
+    <script src="/src/lib/core/import.js"></script>
 
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .player-info { margin-bottom: 10px; }
-    button { margin-right: 5px; margin-top: 5px; }
-  </style>
-</head>
-<body>
-  <div id="player-container">
-    <div>X: <span class="player-x">0</span></div>
-    <div>Y: <span class="player-y">0</span></div>
-    <div>Health: <span class="player-health">100</span></div>
-    <div>Gold: <span class="player-gold">0</span></div>
-    <div>Inventory: <span class="player-inventory"></span></div>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        height: 100%;
+      }
+      body {
+        background-color: #000000;
+        color: #ffffff;
+      }
+      h1 {
+        font-family: 'Playfair Display';
+        font-size: 30px;
+        padding: 10px 0px;
+        margin: 0px;
+      }
+      .field-box {
+        border: 2px solid #d0d0d0;
+        float: left;
+      }
+      .field {
+        position: relative;
+        width: 1400px;
+        height: 980px;
+      }
+      .field .tile {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        background-size: 100%;
+        background-image: url(public/tiles/tile-.png);
+        z-index: 5;
+      }
+      .field .tileW {
+        background-image: url(public/tiles/tile-W.png);
+      }
+      .field .tileE {
+        background-image: url(public/tiles/tile-E.png);
+        z-index: 10;
+      }
+      .field .tileP {
+        background-image: url(public/tiles/tile-P.png);
+        z-index: 10;
+      }
+      .field .tileHP {
+        background-image: url(public/tiles/tile-HP.png);
+        z-index: 9;
+      }
+      .field .tileSW {
+        background-image: url(public/tiles/tile-SW.png);
+        z-index: 9;
+      }
+      .field .tile .health {
+        background-color: #ff0000;
+        z-index: 11;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 3px;
+      }
+      .field .tileP .health {
+        background-color: #00ff00;
+        z-index: 11;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 3px;
+      }
+      .inventory-box {
+        border: 2px solid #d0d0d0;
+        float: left;
+      }
+      .inventory {
+        position: relative;
+        width: 800px;
+        height: 32px;
+      }
+      .cl {
+        clear: both;
+        display: block;
+      }
 
-    <button class="move-btn">Move +1,+1</button>
-    <button class="damage-btn">Take 10 Damage</button>
-    <button class="heal-btn">Heal 5</button>
-    <button class="gold-btn">Add 50 Gold</button>
-    <button class="add-item-btn">Add Item</button>
-  </div>
-  <script src="/src/index.js"></script>
-</body>
+      .player-info {
+        margin-bottom: 10px;
+      }
+      button {
+        margin-right: 5px;
+        margin-top: 5px;
+      }
+
+      header,
+      #player-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Игровое поле</h1>
+      <div id="player-container">
+        <div>
+          X: <span class="player-x">0</span><br />Y:
+          <span class="player-y">0</span>
+        </div>
+        <div>Health: <span class="player-health">100</span></div>
+        <div>Gold: <span class="player-gold">0</span></div>
+        <div>Inventory: <span class="player-inventory"></span></div>
+        <button class="move-btn">Move +1,+1</button>
+        <button class="damage-btn">Take 10 Damage</button>
+        <button class="heal-btn">Heal 5</button>
+        <button class="gold-btn">Add 50 Gold</button>
+      </div>
+    </header>
+    <div class="field-box">
+      <div class="field"></div>
+    </div>
+    <div class="cl"></div>
+    <h1>Инвентарь</h1>
+    <div class="inventory-box"><div class="inventory"></div></div>
+    <script src="/src/index.js"></script>
+  </body>
 </html>

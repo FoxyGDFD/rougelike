@@ -7,14 +7,29 @@ var PlayerView = function (container, viewModel) {
   var goldEl = container.querySelector('.player-gold')
   var inventoryEl = container.querySelector('.player-inventory')
 
+  var TILE_SIZE = 35
+
+  var field = document.querySelector('.field')
+  var playerTile = document.createElement('div')
+  playerTile.className = 'tile tileP'
+
+  field.appendChild(playerTile)
+
+  var playerHealth = document.createElement('div')
+  playerHealth.className = 'health'
+  playerTile.appendChild(playerHealth);
+
   effect(function () {
     xEl.textContent = viewModel.x.value
+    playerTile.style.left = viewModel.x.value * TILE_SIZE + 'px'
+    playerTile.style.top = viewModel.y.value * TILE_SIZE + 'px'
   })
   effect(function () {
     yEl.textContent = viewModel.y.value
   })
   effect(function () {
     healthEl.textContent = viewModel.health.value
+    playerHealth.style.width = viewModel.health.value + '%'
   })
   effect(function () {
     goldEl.textContent = viewModel.gold.value
@@ -27,7 +42,6 @@ var PlayerView = function (container, viewModel) {
   var damageBtn = container.querySelector('.damage-btn')
   var healBtn = container.querySelector('.heal-btn')
   var goldBtn = container.querySelector('.gold-btn')
-  var addItemBtn = container.querySelector('.add-item-btn')
 
   if (moveBtn)
     moveBtn.addEventListener('click', function () {
@@ -44,11 +58,6 @@ var PlayerView = function (container, viewModel) {
   if (goldBtn)
     goldBtn.addEventListener('click', function () {
       viewModel.addGold(50)
-    })
-  if (addItemBtn)
-    addItemBtn.addEventListener('click', function () {
-      var item = prompt('Enter item name:')
-      if (item) viewModel.addItem(item)
     })
 }
 
