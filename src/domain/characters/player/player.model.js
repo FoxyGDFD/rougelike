@@ -11,10 +11,6 @@ var PlayerModel = Class.create({
     this.inventory = signal(stats?.inventory || [])
   },
   methods: {
-    move: function (dx, dy) {
-      this.x.value += dx
-      this.y.value += dy
-    },
     setHealth: function (amount) {
       if (amount > this.maxHealth) {
         this.health.value = this.maxHealth
