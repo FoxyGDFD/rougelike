@@ -1,6 +1,6 @@
 var effect = $import('@core/signal').effect
 
-var PlayerView = function (container, viewModel) {
+var PlayerView = function (container, vm) {
   var xEl = container.querySelector('.player-x')
   var yEl = container.querySelector('.player-y')
   var healthEl = container.querySelector('.player-health')
@@ -20,45 +20,49 @@ var PlayerView = function (container, viewModel) {
   playerTile.appendChild(playerHealth);
 
   effect(function () {
-    xEl.textContent = viewModel.x.value
-    playerTile.style.left = viewModel.x.value * TILE_SIZE + 'px'
-    playerTile.style.top = viewModel.y.value * TILE_SIZE + 'px'
-  })
+    xEl.textContent = vm.coordinates.value.x
+    yEl.textContent = vm.coordinates.value.y
+    playerTile.style.left = vm.coordinates.value.x * TILE_SIZE + 'px'
+    playerTile.style.top = vm.coordinates.value.y * TILE_SIZE + 'px'
+  }.bind(this))
   effect(function () {
-    yEl.textContent = viewModel.y.value
-  })
+    healthEl.textContent = vm.health.value
+    playerHealth.style.width = vm.health.value + '%'
+  }.bind(this))
   effect(function () {
-    healthEl.textContent = viewModel.health.value
-    playerHealth.style.width = viewModel.health.value + '%'
-  })
-  effect(function () {
-    goldEl.textContent = viewModel.gold.value
-  })
-  effect(function () {
-    inventoryEl.textContent = viewModel.inventory.value.join(', ')
-  })
+    goldEl.textContent = vm.gold.value
+  }.bind(this))
 
-  var moveBtn = container.querySelector('.move-btn')
+
   var damageBtn = container.querySelector('.damage-btn')
   var healBtn = container.querySelector('.heal-btn')
   var goldBtn = container.querySelector('.gold-btn')
 
-  if (moveBtn)
-    moveBtn.addEventListener('click', function () {
-      viewModel.move(1, 1)
-    })
   if (damageBtn)
     damageBtn.addEventListener('click', function () {
-      viewModel.takeDamage(10)
+      vm.takeDamage(10)
     })
   if (healBtn)
     healBtn.addEventListener('click', function () {
-      viewModel.heal(5)
+      vm.heal(5)
     })
   if (goldBtn)
     goldBtn.addEventListener('click', function () {
-      viewModel.addGold(50)
+      vm.addGold(50)
     })
+
+  document.addEventListener('keydown', function (event) {
+    var key = event.key
+    if (key === 'a') {
+      vm.move(-1, 0);
+    } else if (key === 'd') {
+      vm.move(1, 0);
+    } else if (key === 's') {
+      vm.move(0, 1);
+    } else if (key === 'w') {
+      vm.move(0, -1);
+    }
+  })
 }
 
 module.exports = PlayerView
