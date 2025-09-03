@@ -5,7 +5,9 @@ var signal = $import('@core/signal').signal
 var isWalkable = $import('@lib/utils/is-walkable')
 
 var PlayerViewModel = Class.create({
-  constructor: function (stats) {
+  constructor: function (stats, mapModel) {
+    this.map = mapModel.map
+    if (!this.map) throw new Error("Map is not injected")
     this.__model__ = PlayerModel.createNew()
     this.coordinates = signal(stats.coordinates || { x: 0, y: 0 })
     this.health = computed(
@@ -23,8 +25,6 @@ var PlayerViewModel = Class.create({
         return this.__model__.inventory.value.slice()
       }.bind(this)
     )
-    if (!stats.map) throw new Error("Map is not injected")
-    this.map = stats.map;
 
   },
   methods: {
@@ -49,14 +49,15 @@ var PlayerViewModel = Class.create({
     },
   },
 })
-PlayerViewModel.createNew = function (map) {
+
+PlayerViewModel.createNew = function (mapModel) {
   var x, y
   do {
-    x = Math.floor(Math.random() * map[0].length)
-    y = Math.floor(Math.random() * map.length)
-  } while (!isWalkable(x, y, map))
+    x = Math.floor(Math.random() * mapModel.map[0]?.length)
+    y = Math.floor(Math.random() * mapModel.map?.length)
+  } while (!isWalkable(x, y, mapModel.map))
 
-  return new PlayerViewModel({ coordinates: { x: x, y: y }, map: map })
+  return new PlayerViewModel({ coordinates: { x: x, y: y } }, mapModel)
 }
 
 module.exports = PlayerViewModel

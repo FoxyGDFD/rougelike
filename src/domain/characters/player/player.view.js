@@ -1,13 +1,13 @@
 var effect = $import('@core/signal').effect
 
-var PlayerView = function (container, vm) {
+function PlayerView(container, vm, configService) {
+  this.config = configService.getConfig();
   var xEl = container.querySelector('.player-x')
   var yEl = container.querySelector('.player-y')
   var healthEl = container.querySelector('.player-health')
   var goldEl = container.querySelector('.player-gold')
-  var inventoryEl = container.querySelector('.player-inventory')
 
-  var TILE_SIZE = 35
+  var tileSize = this.config.tileSize;
 
   var field = document.querySelector('.field')
   var playerTile = document.createElement('div')
@@ -22,8 +22,8 @@ var PlayerView = function (container, vm) {
   effect(function () {
     xEl.textContent = vm.coordinates.value.x
     yEl.textContent = vm.coordinates.value.y
-    playerTile.style.left = vm.coordinates.value.x * TILE_SIZE + 'px'
-    playerTile.style.top = vm.coordinates.value.y * TILE_SIZE + 'px'
+    playerTile.style.left = vm.coordinates.value.x * tileSize + 'px'
+    playerTile.style.top = vm.coordinates.value.y * tileSize + 'px'
   }.bind(this))
   effect(function () {
     healthEl.textContent = vm.health.value

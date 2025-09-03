@@ -121,9 +121,9 @@ function $import(requestPath, parentDir) {
     if (!window.ALIASES[alias]) {
       throw new Error(
         'Alias not found: ' +
-          alias +
-          '. Available: ' +
-          Object.keys(window.ALIASES).join(', ')
+        alias +
+        '. Available: ' +
+        Object.keys(window.ALIASES).join(', ')
       )
     }
 

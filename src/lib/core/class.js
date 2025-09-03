@@ -2,7 +2,7 @@ var ClassFactory = {
   create: function (definition) {
     definition = definition || {}
 
-    var constructor = definition.constructor || function () {}
+    var constructor = definition.constructor || function () { }
 
     var parentClass = definition.extends
     if (parentClass) {
