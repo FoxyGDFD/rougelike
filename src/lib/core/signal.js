@@ -2,28 +2,32 @@ var currentEffect = null
 
 function signal(initialValue) {
   var value = initialValue
-  var __subscribers__ = []
+  var _subscribers = []
 
   var obj = {}
 
   Object.defineProperty(obj, 'value', {
     get: function () {
-      if (currentEffect && __subscribers__.indexOf(currentEffect) === -1) {
-        __subscribers__.push(currentEffect)
+      if (currentEffect && _subscribers.indexOf(currentEffect) === -1) {
+        _subscribers.push(currentEffect)
       }
       return value
     },
     set: function (newValue) {
       value = newValue
-      for (var i = 0; i < __subscribers__.length; i++) {
-        __subscribers__[i]()
+      for (var i = 0; i < _subscribers.length; i++) {
+        _subscribers[i]()
       }
     },
   })
 
   obj.subscribe = function (fn) {
-    if (typeof fn === 'function' && __subscribers__.indexOf(fn) === -1) {
-      __subscribers__.push(fn)
+    if (typeof fn === 'function' && _subscribers.indexOf(fn) === -1) {
+      _subscribers.push(fn)
+    }
+    return function dispose() {
+      var idx = _subscribers.indexOf(fn)
+      if (idx !== -1) _subscribers.splice(idx, 1)
     }
   }
 
@@ -31,9 +35,15 @@ function signal(initialValue) {
 }
 
 function effect(fn) {
-  currentEffect = fn
-  fn()
-  currentEffect = null
+  function wrapped() {
+    currentEffect = wrapped
+    fn()
+    currentEffect = null
+  }
+  wrapped()
+  return function dispose() {
+    // удаляем подписку вручную
+  }
 }
 
 function computed(fn) {

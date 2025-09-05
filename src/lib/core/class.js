@@ -2,12 +2,30 @@ var ClassFactory = {
   create: function (definition) {
     definition = definition || {}
 
-    var constructor = definition.constructor || function () { }
-
     var parentClass = definition.extends
+
+    var constructor =
+      definition.constructor ||
+      function () {
+        if (parentClass) {
+          parentClass.apply(this, arguments) // вызываем конструктор родителя
+        }
+      }
+
     if (parentClass) {
+      if (typeof parentClass !== 'function') {
+        throw new TypeError('Parent class must be a function')
+      }
+
       constructor.prototype = Object.create(parentClass.prototype)
       constructor.prototype.constructor = constructor
+
+      for (var key in parentClass) {
+        if (parentClass.hasOwnProperty(key)) {
+          constructor[key] = parentClass[key]
+        }
+      }
+
       constructor.__super__ = parentClass.prototype
     }
 
@@ -28,11 +46,9 @@ var ClassFactory = {
     if (definition.static) {
       for (var staticName in definition.static) {
         if (
-          Object.prototype.hasOwnProperty.call(definition.static, staticName) &&
-          typeof definition.static[staticName] === 'function'
+          Object.prototype.hasOwnProperty.call(definition.static, staticName)
         ) {
-          constructor[staticName] =
-            definition.static[staticName].bind(constructor)
+          constructor[staticName] = definition.static[staticName]
         }
       }
     }

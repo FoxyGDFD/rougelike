@@ -1,16 +1,62 @@
 var Class = $import('@core/class')
 var signal = $import('@core/signal').signal
+var isWalkable = $import('@lib/utils/is-walkable')
 
-var Unit = Class.create({
-  constructor: function (stats) {
-    this.maxHealth = stats?.maxHealth || 100
-    this.health = signal(stats?.health || this.maxHealth)
+var UnitModel = Class.create({
+  constructor: function (stats, mapModel) {
+    stats = stats || {}
+    this._map = mapModel.map
+    this._health = signal(stats.health || 100)
+    this._coordinates = signal(stats.coordinates || { x: 0, y: 0 })
+    this._maxHealth = stats.maxHealth || 100
   },
   methods: {
-    setHealth: function (hp) {
-      this.health.value = hp
+    getMaxHealth: function () {
+      return this._maxHealth
+    },
+    getHealth: function () {
+      return this._health.value
+    },
+    increaseHealth: function (amount) {
+      if (this._health.value + amount > this._maxHealth) {
+        this._health.value = this._maxHealth
+      } else {
+        this._health.value += amount
+      }
+    },
+    decreaseHealth: function (amount) {
+      if (this._health.value - amount < 0) {
+        this._health.value = 0
+      } else {
+        this._health.value -= amount
+      }
+    },
+
+    getCoordinates: function () {
+      return this._coordinates.value
+    },
+    move: function (dx, dy) {
+      var newX = this._coordinates.value.x + dx
+      var newY = this._coordinates.value.y + dy
+      if (!isWalkable(newX, newY, this._map)) return
+
+      this._coordinates.value = { x: newX, y: newY }
+    },
+  },
+  static: {
+    createNew: function (mapModel, stats) {
+      var x, y
+      stats = stats || {}
+      do {
+        x = Math.floor(Math.random() * mapModel.map[0].length)
+        y = Math.floor(Math.random() * mapModel.map.length)
+      } while (!isWalkable(x, y, mapModel.map))
+      if (!stats.coordinates) {
+        stats.coordinates = { x: x, y: y }
+      }
+      return new this(stats, mapModel)
     },
   },
 })
 
-module.exports = Unit
+module.exports = UnitModel

@@ -3,10 +3,10 @@ var TILE_TYPES = $import('./tile.types')
 
 var MapModel = Class.create({
   constructor: function (config) {
-    this.config = config.getConfig();
-    this.map = [];
+    this.config = config.getConfig()
+    this.map = []
 
-    this._fillEmptyMap();
+    this._fillEmptyMap()
   },
 
   methods: {
@@ -21,13 +21,17 @@ var MapModel = Class.create({
           ) {
             this.map[y][x] = 1
           } else {
-            var seed = Math.random();
+            var seed = Math.random()
             var type = TILE_TYPES['floor']
-            if (seed > 0.8) { type = TILE_TYPES['wall'] }
-            else if (seed < 0.01) { type = TILE_TYPES['heal'] }
-            else if (seed < 0.02) { type = TILE_TYPES['sword'] }
+            if (seed > 0.8) {
+              type = TILE_TYPES['wall']
+            } else if (seed < 0.01) {
+              type = TILE_TYPES['heal']
+            } else if (seed < 0.02) {
+              type = TILE_TYPES['sword']
+            }
 
-            this.map[y][x] = type;
+            this.map[y][x] = type
           }
         }
       }
@@ -43,13 +47,13 @@ var MapModel = Class.create({
         }
         this.map.push(row)
       }
-    }
-
+    },
+  },
+  static: {
+    createNew: function (config) {
+      return new MapModel(config)
+    },
   },
 })
-
-MapModel.createNew = function (config) {
-  return new MapModel(config);
-}
 
 module.exports = MapModel

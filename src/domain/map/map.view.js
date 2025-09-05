@@ -3,8 +3,9 @@ var TILE_TYPES = $import('./tile.types')
 function MapView(container, mapModel, configService) {
   this.model = mapModel
   this.container = container
-  this.config = configService.getConfig();
+  this.config = configService.getConfig()
 }
+
 MapView.prototype.renderMap = function () {
   for (var y = 0; y < this.model.map.length; y++) {
     for (var x = 0; x < this.model.map[y].length; x++) {
@@ -31,8 +32,14 @@ MapView.prototype._createTile = function (x, y, type) {
   return tile
 }
 
+MapView.prototype.renderTile = function (x, y) {
+  var tile = this._createTile(x, y, this.model.map[y][x])
+  this.container.appendChild(tile)
+  return tile
+}
+
 MapView.createNew = function (container, mapModel, configService) {
-  return new MapView(container, mapModel, configService);
+  return new MapView(container, mapModel, configService)
 }
 
 module.exports = MapView
