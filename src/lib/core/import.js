@@ -2,6 +2,7 @@
 
 var moduleCache = {}
 
+// eslint-disable-next-line no-unused-vars
 function joinPath() {
   var parts = []
   for (var i = 0; i < arguments.length; i++) {
@@ -10,7 +11,9 @@ function joinPath() {
 
       if (part.includes('//')) {
         throw new Error(
-          `Invalid path part: "${arguments[i]}" contains double slashes "//"`
+          'Invalid path part: "' +
+            arguments[i] +
+            ' contains double slashes "//"'
         )
       }
 
@@ -24,7 +27,9 @@ function resolvePath(basePath, relativePath) {
   var base = basePath.replace(/\/$/, '')
   var stack = base.split('/').filter(Boolean)
 
-  var parts = relativePath.split('/').filter((part) => part !== '')
+  var parts = relativePath.split('/').filter(function (part) {
+    return part !== ''
+  })
 
   for (var i = 0; i < parts.length; i++) {
     if (parts[i] === '.') continue
@@ -121,9 +126,9 @@ function $import(requestPath, parentDir) {
     if (!window.ALIASES[alias]) {
       throw new Error(
         'Alias not found: ' +
-        alias +
-        '. Available: ' +
-        Object.keys(window.ALIASES).join(', ')
+          alias +
+          '. Available: ' +
+          Object.keys(window.ALIASES).join(', ')
       )
     }
 

@@ -6,15 +6,14 @@ var ConfigService = Class.create({
       // map with and height counts in tiles
       mapWidth: 40,
       mapHeight: 28,
-      tileSize: 35
+      tileSize: 35,
     }
   },
   methods: {
     getConfig: function () {
       return this._config
-    }
-  }
+    },
+  },
 })
-
 
 module.exports = ConfigService

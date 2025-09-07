@@ -1,10 +1,5 @@
-var Class = $import('./class')
-
-function Node(item) {
-  this.item = item
-  this.next = null
-  this.prev = null
-}
+var Class = $import('../class')
+var Node = $import('./node')
 
 var LinkedList = Class.create({
   constructor: function () {
@@ -17,9 +12,9 @@ var LinkedList = Class.create({
     toArray: function () {
       var array = []
       var current = this.head
-      for (var _ in this.length) {
-        array.push(current)
-        current.next
+      while (array.length !== this.length) {
+        array.push(current.item)
+        current = current.next
       }
       return array
     },
@@ -41,7 +36,15 @@ var LinkedList = Class.create({
       this.length++
       return this
     },
-    removeCurrent: function () {
+    setCurrentIndex: function (index) {
+      var newCurrent = this.head
+      while (index > 0) {
+        newCurrent = newCurrent.next
+        index -= 1
+      }
+      this.current = newCurrent
+    },
+    removeCurrentNode: function () {
       if (!this.current) return
 
       if (this.length === 1) {
@@ -60,20 +63,20 @@ var LinkedList = Class.create({
       return this
     },
 
-    nextItem: function () {
+    nextNode: function () {
       if (!this.current) return
       this.current = this.current.next
       return this
     },
 
-    prevItem: function () {
+    prevNode: function () {
       if (!this.current) return
       this.current = this.current.prev
       return this
     },
 
-    getCurrent: function () {
-      return this.current ? this.current.item : null
+    getCurrentNode: function () {
+      return this.current || null
     },
   },
 })

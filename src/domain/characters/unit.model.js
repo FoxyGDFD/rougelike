@@ -5,7 +5,7 @@ var isWalkable = $import('@lib/utils/is-walkable')
 var UnitModel = Class.create({
   constructor: function (stats, mapModel) {
     stats = stats || {}
-    this._map = mapModel.map
+    this._mapModel = mapModel
     this._health = signal(stats.health || 100)
     this._coordinates = signal(stats.coordinates || { x: 0, y: 0 })
     this._maxHealth = stats.maxHealth || 100
@@ -38,23 +38,23 @@ var UnitModel = Class.create({
     move: function (dx, dy) {
       var newX = this._coordinates.value.x + dx
       var newY = this._coordinates.value.y + dy
-      if (!isWalkable(newX, newY, this._map)) return
+      if (!isWalkable(newX, newY, this._mapModel.getMap())) return
 
       this._coordinates.value = { x: newX, y: newY }
     },
   },
   static: {
     createNew: function (mapModel, stats) {
-      var x, y
       stats = stats || {}
+      var x, y
       do {
-        x = Math.floor(Math.random() * mapModel.map[0].length)
-        y = Math.floor(Math.random() * mapModel.map.length)
-      } while (!isWalkable(x, y, mapModel.map))
+        x = Math.floor(Math.random() * mapModel.getMap()[0].length)
+        y = Math.floor(Math.random() * mapModel.getMap().length)
+      } while (!isWalkable(x, y, mapModel.getMap()))
       if (!stats.coordinates) {
         stats.coordinates = { x: x, y: y }
       }
-      return new this(stats, mapModel)
+      return new this(mapModel, stats)
     },
   },
 })

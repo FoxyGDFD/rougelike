@@ -100,10 +100,30 @@
         float: left;
       }
       .inventory {
-        position: relative;
+        display: flex;
         width: 800px;
         height: 32px;
       }
+
+      .inventory .tile {
+        width: 32px;
+        height: 32px;
+        background-size: 100%;
+        background-image: url(public/tiles/tile-.png);
+        z-index: 5;
+      }
+      .inventory .tile .selected {
+        border: 4px solid #eeeeee;
+      }
+      .inventory .tileHP {
+        background-image: url(public/tiles/tile-HP.png);
+        z-index: 9;
+      }
+      .inventory .tileSW {
+        background-image: url(public/tiles/tile-SW.png);
+        z-index: 9;
+      }
+
       .cl {
         clear: both;
         display: block;
@@ -147,8 +167,8 @@
       <div class="field"></div>
     </div>
     <div class="cl"></div>
-    <!-- <h1>Инвентарь</h1>
-    <div class="inventory-box"><div class="inventory"></div></div> -->
+    <h1>Инвентарь</h1>
+    <div class="inventory-box"><div class="inventory"></div></div>
     <script src="/src/index.js"></script>
   </body>
 </html>

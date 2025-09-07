@@ -4,22 +4,41 @@ var TILE_TYPES = $import('./tile.types')
 var MapModel = Class.create({
   constructor: function (config) {
     this.config = config.getConfig()
-    this.map = []
+    this._map = []
+
+    this.listeners = []
 
     this._fillEmptyMap()
   },
 
   methods: {
+    getMap: function () {
+      return this._map
+    },
+    onTileChange: function (callback) {
+      this.listeners.push(callback)
+    },
+    _notifyTileChange: function (x, y, newType) {
+      this.listeners.forEach(function (listener) {
+        listener(x, y, newType)
+      })
+    },
+
+    setTile: function (x, y, type) {
+      this._map[y][x] = type
+      this._notifyTileChange(x, y, type)
+    },
+
     generateMap: function () {
-      for (var y = 0; y < this.map.length; y++) {
-        for (var x = 0; x < this.map[y].length; x++) {
+      for (var y = 0; y < this._map.length; y++) {
+        for (var x = 0; x < this._map[y].length; x++) {
           if (
             x === 0 ||
             y === 0 ||
-            x === this.map[y].length - 1 ||
-            y === this.map.length - 1
+            x === this._map[y].length - 1 ||
+            y === this._map.length - 1
           ) {
-            this.map[y][x] = 1
+            this._map[y][x] = 1
           } else {
             var seed = Math.random()
             var type = TILE_TYPES['floor']
@@ -31,7 +50,7 @@ var MapModel = Class.create({
               type = TILE_TYPES['sword']
             }
 
-            this.map[y][x] = type
+            this._map[y][x] = type
           }
         }
       }
@@ -39,13 +58,13 @@ var MapModel = Class.create({
     },
 
     _fillEmptyMap: function () {
-      this.map = []
+      this._map = []
       for (var y = 0; y < this.config.mapHeight; y++) {
         var row = []
         for (var x = 0; x < this.config.mapWidth; x++) {
           row.push(0)
         }
-        this.map.push(row)
+        this._map.push(row)
       }
     },
   },

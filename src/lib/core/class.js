@@ -8,7 +8,7 @@ var ClassFactory = {
       definition.constructor ||
       function () {
         if (parentClass) {
-          parentClass.apply(this, arguments) // вызываем конструктор родителя
+          parentClass.apply(this, arguments)
         }
       }
 
@@ -21,7 +21,7 @@ var ClassFactory = {
       constructor.prototype.constructor = constructor
 
       for (var key in parentClass) {
-        if (parentClass.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(parentClass, key)) {
           constructor[key] = parentClass[key]
         }
       }

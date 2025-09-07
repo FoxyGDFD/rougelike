@@ -10,10 +10,6 @@ var PlayerViewModel = Class.create({
       return self._model.getGold()
     })
 
-    this.inventory = computed(function () {
-      return self._model.getInventory()
-    })
-
     this.health = computed(function () {
       return self._model.getHealth()
     })
@@ -35,18 +31,11 @@ var PlayerViewModel = Class.create({
     addGold: function (amount) {
       this._model.setGold(this.gold.value + amount)
     },
-    addItem: function (item) {
-      this._model.addItem(item)
+    dropCurrentItem: function () {
+      this._model.dropCurrentItem()
     },
-
     useItem: function () {
       this._model.useCurrentItem(this)
-    },
-    nextItem: function () {
-      this._model.nextItem()
-    },
-    prevItem: function () {
-      this._model.prevItem()
     },
   },
   static: {
