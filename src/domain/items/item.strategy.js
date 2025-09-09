@@ -4,7 +4,6 @@ var ItemStrategy = Class.create({
   constructor: function (name, isDisposable) {
     this.name = name || 'ItemStrategy'
     this.isDisposable = isDisposable || false
-    this.tile = null
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
@@ -12,7 +11,11 @@ var ItemStrategy = Class.create({
       // eslint-disable-next-line no-console
       console.log('Using item:', this.name)
     },
-    createTile: function () {},
+    createTile: function () {
+      var tile = document.createElement('div')
+
+      return tile
+    },
   },
 })
 
