@@ -12,15 +12,15 @@ function joinPath() {
       if (part.includes('//')) {
         throw new Error(
           'Invalid path part: "' +
-            arguments[i] +
-            ' contains double slashes "//"'
+          arguments[i] +
+          ' contains double slashes "//"'
         )
       }
 
       if (part) parts.push(part)
     }
   }
-  return '/' + parts.join('/')
+  return parts.join('/')
 }
 
 function resolvePath(basePath, relativePath) {
@@ -40,7 +40,7 @@ function resolvePath(basePath, relativePath) {
     }
   }
 
-  return '/' + stack.join('/')
+  return stack.join('/')
 }
 
 function loadModule(fullPath, requestPath) {
@@ -126,9 +126,9 @@ function $import(requestPath, parentDir) {
     if (!window.ALIASES[alias]) {
       throw new Error(
         'Alias not found: ' +
-          alias +
-          '. Available: ' +
-          Object.keys(window.ALIASES).join(', ')
+        alias +
+        '. Available: ' +
+        Object.keys(window.ALIASES).join(', ')
       )
     }
 
