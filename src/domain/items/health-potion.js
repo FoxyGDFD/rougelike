@@ -1,6 +1,8 @@
 var Class = $import('@core/class')
-var ItemStrategy = $import('./item.strategy')
+
 var TILE_TYPES = $import('@domain/map/tile.types')
+
+var ItemStrategy = $import('./item.strategy')
 
 var HealthPotion = Class.create({
   extends: ItemStrategy,

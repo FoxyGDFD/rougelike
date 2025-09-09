@@ -1,5 +1,6 @@
-var TILE_TYPES = $import('./tile.types')
 var Class = $import('@core/class')
+
+var TILE_TYPES = $import('@domain/map/tile.types')
 
 var MapView = Class.create({
   constructor: function (container, mapModel, configService) {

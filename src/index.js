@@ -5,21 +5,22 @@ function bootstrap() {
   var configService = new ConfigService()
 
   var MapModel = $import('@domain/map/map.model')
-  var MapView = $import('@domain/map/map.view')
-
+  var PlayerModel = $import('@domain/characters/player/player.model')
   var PlayerInventoryModel = $import(
     '@domain/characters/player/inventory/inventory.model'
   )
+
+  var PlayerVM = $import('@ia/characters/player/player.view-model')
+  var PlayerController = $import('@ia/characters/player/player.controller')
   var PlayerInventoryController = $import(
-    '@domain/characters/player/inventory/inventory.controller'
+    '@ia/characters/player/inventory/inventory.controller'
   )
+
+  var MapView = $import('@ui/map/map.view')
+  var PlayerView = $import('@ui/characters/player/player.view')
   var PlayerInventoryView = $import(
-    '@domain/characters/player/inventory/inventory.view'
+    '@ui/characters/player/inventory/inventory.view'
   )
-  var PlayerModel = $import('@domain/characters/player/player.model')
-  var PlayerVM = $import('@domain/characters/player/player.view-model')
-  var PlayerController = $import('@domain/characters/player/player.controller')
-  var PlayerView = $import('@domain/characters/player/player.view')
 
   var mapSelector = document.querySelector('.field')
   var playerSelector = document.getElementById('player-container')

@@ -1,6 +1,7 @@
 var Class = $import('@core/class')
 var signal = $import('@core/signal').signal
 var LinkedList = $import('@core/linked-list/linked-list')
+
 var ItemStrategy = $import('@domain/items/item.strategy')
 
 var InventoryModel = Class.create({

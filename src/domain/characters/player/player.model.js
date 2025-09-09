@@ -1,9 +1,11 @@
 var Class = $import('@core/class')
-var UnitModel = $import('@domain/characters/unit.model')
+var signal = $import('@core/signal').signal
+
+var Sword = $import('@domain/items/sword')
 var TILE_TYPES = $import('@domain/map/tile.types')
 var HealthPotion = $import('@domain/items/health-potion')
-var Sword = $import('@domain/items/sword')
-var signal = $import('@core/signal').signal
+
+var UnitModel = $import('../unit.model')
 
 var PlayerModel = Class.create({
   extends: UnitModel,
