@@ -11,7 +11,7 @@ function PlayerController(playerVM) {
     else if (key === 's') self._vm.move(0, 1)
     else if (key === 'e') self._vm.useItem()
     else if (key === 'q') self._vm.dropCurrentItem()
-    // else if (key === ' ') self._vm.attack()
+    else if (key === ' ') self._vm.attack()
   })
 }
 

@@ -15,7 +15,7 @@ var PlayerViewModel = Class.create({
     })
 
     this.coordinates = computed(function () {
-      return self._model.getCoordinates()
+      return self._model._getCoordinates()
     })
   },
   methods: {
@@ -36,6 +36,9 @@ var PlayerViewModel = Class.create({
     },
     useItem: function () {
       this._model.useCurrentItem(this)
+    },
+    attack: function () {
+      this._model.attack()
     },
   },
   static: {

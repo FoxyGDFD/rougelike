@@ -32,7 +32,7 @@ var UnitModel = Class.create({
       }
     },
 
-    getCoordinates: function () {
+    _getCoordinates: function () {
       return this._coordinates.value
     },
     move: function (dx, dy) {
