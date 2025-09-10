@@ -2,60 +2,32 @@
 
 var moduleCache = {}
 
-// eslint-disable-next-line no-unused-vars
-function joinPath() {
-  var parts = []
-  for (var i = 0; i < arguments.length; i++) {
-    if (arguments[i]) {
-      var part = arguments[i].replace(/^\/+|\/+$/g, '')
-
-      if (part.includes('//')) {
-        throw new Error(
-          'Invalid path part: "' +
-          arguments[i] +
-          ' contains double slashes "//"'
-        )
-      }
-
-      if (part) parts.push(part)
-    }
+/**
+ * Загрузка HTML файла и преобразование в DOM элементы
+ */
+function loadHTMLModule(code, fullPath) {
+  try {
+    return code
+  } catch (error) {
+    throw new Error('HTML error in ' + fullPath + ': ' + error.message)
   }
-  return parts.join('/')
 }
 
-function resolvePath(basePath, relativePath) {
-  var base = basePath.replace(/\/$/, '')
-  var stack = base.split('/').filter(Boolean)
-
-  var parts = relativePath.split('/').filter(function (part) {
-    return part !== ''
-  })
-
-  for (var i = 0; i < parts.length; i++) {
-    if (parts[i] === '.') continue
-    if (parts[i] === '..') {
-      if (stack.length > 0) stack.pop()
-    } else {
-      stack.push(parts[i])
-    }
+/**
+ * Загрузка JSON файла
+ */
+function loadJSONModule(code, fullPath) {
+  try {
+    return JSON.parse(code)
+  } catch (error) {
+    throw new Error('JSON parse error in ' + fullPath + ': ' + error.message)
   }
-
-  return stack.join('/')
 }
 
-function loadModule(fullPath, requestPath) {
-  if (moduleCache[fullPath]) {
-    return moduleCache[fullPath]
-  }
-
-  var xhr = new XMLHttpRequest()
-  xhr.open('GET', fullPath, false)
-  xhr.send()
-
-  if (xhr.status !== 200) {
-    throw new Error('Module not found: ' + fullPath)
-  }
-
+/**
+ * Загрузка JavaScript модуля
+ */
+function loadJSModule(code, fullPath) {
   var moduleExports = {}
   var module = { exports: moduleExports }
   var moduleDir = fullPath.substring(0, fullPath.lastIndexOf('/'))
@@ -65,8 +37,6 @@ function loadModule(fullPath, requestPath) {
   }
 
   try {
-    var code = xhr.responseText
-
     var moduleFunction = new Function(
       'module',
       'exports',
@@ -76,82 +46,85 @@ function loadModule(fullPath, requestPath) {
     )
 
     moduleFunction(module, module.exports, moduleDir, localImport)
+    return module.exports
   } catch (error) {
-    var errorMessage =
-      'Error loading module: ' + requestPath + '\nFile: ' + fullPath
+    var errorMessage = 'Error in ' + fullPath + ': ' + error.message
 
     if (error.stack) {
       var stackLines = error.stack.split('\n')
       for (var i = 0; i < stackLines.length; i++) {
         if (stackLines[i].includes(fullPath)) {
-          errorMessage += '\nLocation: ' + stackLines[i].trim()
+          errorMessage += '\n at ' + stackLines[i].trim()
           break
         }
       }
-
-      if (i === stackLines.length) {
-        errorMessage += '\nStack: ' + error.stack
-      }
-    } else {
-      errorMessage += '\nError: ' + error.message
     }
 
     throw new Error(errorMessage)
   }
-
-  moduleCache[fullPath] = module.exports
-  return module.exports
 }
 
+/**
+ * Синхронная загрузка файла
+ * @param {string} filePath - абсолютный путь до файла
+ */
+function loadFileSync(filePath) {
+  var xhr = new XMLHttpRequest()
+  xhr.open('GET', filePath, false)
+  xhr.send()
+
+  if (xhr.status !== 200) {
+    throw new Error(
+      'File not found: ' + filePath + ' (status: ' + xhr.status + ')'
+    )
+  }
+
+  return xhr.responseText
+}
+
+/**
+ * Загрузка модуля по полному пути
+ */
+function loadModule(fullPath, requestPath) {
+  if (moduleCache[fullPath]) {
+    return moduleCache[fullPath]
+  }
+
+  var extension = fullPath.split('.').pop().toLowerCase()
+  var file = loadFileSync(fullPath)
+  var result
+
+  switch (extension) {
+    case 'html':
+      result = loadHTMLModule(file, fullPath)
+      break
+
+    case 'json':
+      result = loadJSONModule(file, fullPath)
+      break
+
+    case 'js':
+      result = loadJSModule(file, fullPath, requestPath)
+      break
+
+    default:
+      throw new Error('Unsupported file type: ' + extension)
+  }
+
+  moduleCache[fullPath] = result
+  return result
+}
+
+/**
+ * Основная функция импорта
+ */
 function $import(requestPath, parentDir) {
-  var fullPath
-
-  if (requestPath.startsWith('./') || requestPath.startsWith('../')) {
-    if (!parentDir) {
-      throw new Error(
-        'Relative import "' + requestPath + '" used without parent context'
-      )
-    }
-    fullPath = resolvePath(parentDir, requestPath)
-  } else {
-    if (!window.ALIASES) {
-      throw new Error(
-        'Aliases not loaded. Make sure aliases.js is loaded first'
-      )
-    }
-    var parts = requestPath.split('/')
-    var alias = parts[0]
-    var modulePath = parts.slice(1).join('/')
-
-    if (!window.ALIASES[alias]) {
-      throw new Error(
-        'Alias not found: ' +
-        alias +
-        '. Available: ' +
-        Object.keys(window.ALIASES).join(', ')
-      )
-    }
-
-    fullPath = window.joinPath(window.ALIASES[alias], modulePath)
+  if (!requestPath) {
+    throw new Error('Import path cannot be empty')
   }
 
-  if (!/\.js$/i.test(fullPath)) {
-    fullPath += '.js'
-  }
-
+  var fullPath = window.resolvePath(requestPath, parentDir)
   return loadModule(fullPath, requestPath)
-}
-
-// --- Алиасы ---
-$import.addAlias = function (alias, path) {
-  if (!window.ALIASES) window.ALIASES = {}
-  window.ALIASES[alias] = path
-}
-$import.getAlias = function (alias) {
-  return window.ALIASES ? window.ALIASES[alias] : undefined
-}
-$import.getAllAliases = function () {
-  return window.ALIASES ? Object.assign({}, window.ALIASES) : {}
 }
 
 window.$import = $import
