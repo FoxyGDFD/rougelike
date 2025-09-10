@@ -37,7 +37,7 @@ function bootstrap() {
   var playerVM = PlayerVM.createNew(
     PlayerModel.createNew(mapModel, { inventoryModel: inventoryModel })
   )
-  PlayerView(playerSelector, playerVM, configService)
+  PlayerView.createNew(playerVM, configService).render('.field')
   new PlayerController(playerVM)
   new PlayerInventoryController(inventoryModel)
 
