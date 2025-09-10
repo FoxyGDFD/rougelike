@@ -1,11 +1,8 @@
-var Class = $import('@core/class')
-
 var TILE_TYPES = $import('@domain/map/tile.types')
 
 var ItemStrategy = $import('./item.strategy')
 
-var Sword = Class.create({
-  extends: ItemStrategy,
+var Sword = ItemStrategy.extends({
   constructor: function (stats) {
     this.damage = stats.damage
     this.range = stats.range

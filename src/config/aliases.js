@@ -1,5 +1,3 @@
-'use strict'
-
 window.ALIASES = {
   '@domain': 'src/domain',
   '@ia': 'src/interface-adapters',

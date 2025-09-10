@@ -1,7 +1,7 @@
 var Class = $import('@core/class')
 var computed = $import('@core/signal').computed
 
-var PlayerViewModel = Class.create({
+var PlayerViewModel = Class({
   constructor: function (playerModel) {
     this._model = playerModel
 

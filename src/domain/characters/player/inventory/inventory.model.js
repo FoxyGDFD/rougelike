@@ -4,7 +4,7 @@ var LinkedList = $import('@core/linked-list/linked-list')
 
 var ItemStrategy = $import('@domain/items/item.strategy')
 
-var InventoryModel = Class.create({
+var InventoryModel = Class({
   constructor: function (items) {
     this._inventory = new LinkedList()
 

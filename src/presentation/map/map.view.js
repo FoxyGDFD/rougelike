@@ -2,7 +2,7 @@ var Class = $import('@core/class')
 
 var TILE_TYPES = $import('@domain/map/tile.types')
 
-var MapView = Class.create({
+var MapView = Class({
   constructor: function (container, mapModel, configService) {
     this._model = mapModel
     this.container = container

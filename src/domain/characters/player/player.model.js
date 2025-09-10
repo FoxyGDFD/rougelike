@@ -1,4 +1,3 @@
-var Class = $import('@core/class')
 var signal = $import('@core/signal').signal
 
 var Sword = $import('@domain/items/sword')
@@ -7,8 +6,7 @@ var HealthPotion = $import('@domain/items/health-potion')
 
 var UnitModel = $import('../unit.model')
 
-var PlayerModel = Class.create({
-  extends: UnitModel,
+var PlayerModel = UnitModel.extends({
   constructor: function (mapModel, stats) {
     stats = stats || {}
     this._gold = signal(stats.gold || 0)
@@ -18,6 +16,7 @@ var PlayerModel = Class.create({
 
     UnitModel.call(this, stats, mapModel)
   },
+
   methods: {
     move: function (dx, dy) {
       UnitModel.prototype.move.call(this, dx, dy)

@@ -1,11 +1,8 @@
-var Class = $import('@core/class')
-
 var TILE_TYPES = $import('@domain/map/tile.types')
 
 var ItemStrategy = $import('./item.strategy')
 
-var HealthPotion = Class.create({
-  extends: ItemStrategy,
+var HealthPotion = ItemStrategy.extends({
   constructor: function (stats) {
     this.healAmount = stats.healAmount
     HealthPotion.__super__.constructor.call(this, TILE_TYPES.heal, true)

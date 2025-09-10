@@ -1,6 +1,6 @@
 var Class = $import('@core/class')
 
-var ItemStrategy = Class.create({
+var ItemStrategy = Class({
   constructor: function (name, isDisposable) {
     this.name = name || 'ItemStrategy'
     this.isDisposable = isDisposable || false

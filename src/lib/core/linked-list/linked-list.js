@@ -1,7 +1,7 @@
 var Class = $import('../class')
 var Node = $import('./node')
 
-var LinkedList = Class.create({
+var LinkedList = Class({
   constructor: function () {
     this.head = null
     this.tail = null

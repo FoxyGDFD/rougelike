@@ -3,7 +3,7 @@ var signal = $import('@core/signal').signal
 
 var isWalkable = $import('@lib/utils/is-walkable')
 
-var UnitModel = Class.create({
+var UnitModel = Class({
   constructor: function (stats, mapModel) {
     stats = stats || {}
     this._mapModel = mapModel

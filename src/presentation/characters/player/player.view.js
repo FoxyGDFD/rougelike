@@ -1,7 +1,7 @@
 var Class = $import('@core/class')
 var effect = $import('@core/signal').effect
 
-var PlayerView = Class.create({
+var PlayerView = Class({
   constructor: function (vm, configService) {
     this._config = configService.getConfig()
     this._vm = vm

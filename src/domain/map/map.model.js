@@ -2,7 +2,7 @@ var Class = $import('@core/class')
 
 var TILE_TYPES = $import('./tile.types')
 
-var MapModel = Class.create({
+var MapModel = Class({
   constructor: function (config) {
     this.config = config.getConfig()
     this._map = []

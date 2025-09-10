@@ -1,6 +1,6 @@
 var Class = $import('@core/class')
 
-var ConfigService = Class.create({
+var ConfigService = Class({
   constructor: function () {
     this._config = {
       // map with and height counts in tiles
