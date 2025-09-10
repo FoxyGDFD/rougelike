@@ -6,7 +6,7 @@ var MapView = Class({
   constructor: function (container, mapModel, configService) {
     this._model = mapModel
     this.container = container
-    this.config = configService.getConfig()
+    this.config = configService.config
     this._tileElements = []
 
     this._model.onTileChange(this.updateTile.bind(this))
@@ -34,16 +34,16 @@ var MapView = Class({
     },
 
     renderTile: function (x, y) {
-      var tile = this._createTile(x, y, this._model.getMap()[y][x])
+      var tile = this._createTile(x, y, this._model.map[y][x])
       this.container.appendChild(tile)
       return tile
     },
 
     renderMap: function () {
       this._tileElements = []
-      for (var y = 0; y < this._model.getMap().length; y++) {
+      for (var y = 0; y < this._model.map.length; y++) {
         var row = []
-        for (var x = 0; x < this._model.getMap()[y].length; x++) {
+        for (var x = 0; x < this._model.map[y].length; x++) {
           row.push(this.renderTile(x, y))
         }
         this._tileElements.push(row)
@@ -51,7 +51,7 @@ var MapView = Class({
     },
 
     updateTile: function (x, y) {
-      var type = this._model.getMap()[y][x]
+      var type = this._model.map[y][x]
       var tile = this._tileElements[y][x]
 
       tile.className = 'tile'

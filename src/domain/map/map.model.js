@@ -4,18 +4,22 @@ var TILE_TYPES = $import('./tile.types')
 
 var MapModel = Class({
   constructor: function (config) {
-    this.config = config.getConfig()
-    this._map = []
+    this.config = config.config
 
     this.listeners = []
 
     this._fillEmptyMap()
   },
+  properties: {
+    map: {
+      get: function () {
+        return this._map || []
+      },
+      configurable: false,
+    },
+  },
 
   methods: {
-    getMap: function () {
-      return this._map
-    },
     onTileChange: function (callback) {
       this.listeners.push(callback)
     },

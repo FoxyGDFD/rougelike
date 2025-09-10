@@ -9,12 +9,12 @@ var UnitModel = $import('../unit.model')
 var PlayerModel = UnitModel.extends({
   constructor: function (mapModel, stats) {
     stats = stats || {}
+    UnitModel.call(this, mapModel, stats)
+
     this._gold = signal(stats.gold || 0)
     this._inventory = stats.inventoryModel
 
     this._damage = stats.damage || 20
-
-    UnitModel.call(this, stats, mapModel)
   },
 
   methods: {
@@ -25,7 +25,7 @@ var PlayerModel = UnitModel.extends({
       var newX = coordinates.x
       var newY = coordinates.y
 
-      var tile = this._mapModel.getMap()[newY][newX]
+      var tile = this._mapModel.map[newY][newX]
 
       if (tile === TILE_TYPES.heal) {
         this._inventory.add(new HealthPotion({ healAmount: 20 }))
@@ -92,8 +92,7 @@ var PlayerModel = UnitModel.extends({
       var coordinates = this._getCoordinates()
       var currentX = coordinates.x
       var currentY = coordinates.y
-      if (this._mapModel.getMap()[currentY][currentX] !== TILE_TYPES.floor)
-        return
+      if (this._mapModel.map[currentY][currentX] !== TILE_TYPES.floor) return
       this._mapModel.setTile(currentX, currentY, item.name)
       this._inventory.removeCurrentNode()
       return item

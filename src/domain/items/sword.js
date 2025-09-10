@@ -6,7 +6,7 @@ var Sword = ItemStrategy.extends({
   constructor: function (stats) {
     this.damage = stats.damage
     this.range = stats.range
-    Sword.__super__.constructor.call(this, TILE_TYPES.sword)
+    ItemStrategy.call(this, TILE_TYPES.sword)
   },
   methods: {
     // eslint-disable-next-line no-unused-vars

@@ -9,9 +9,12 @@ var ConfigService = Class({
       tileSize: 35,
     }
   },
-  methods: {
-    getConfig: function () {
-      return this._config
+  properties: {
+    config: {
+      get: function () {
+        return this._config
+      },
+      configurable: false,
     },
   },
 })

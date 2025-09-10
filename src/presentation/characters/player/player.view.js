@@ -3,7 +3,7 @@ var effect = $import('@core/signal').effect
 
 var PlayerView = Class({
   constructor: function (vm, configService) {
-    this._config = configService.getConfig()
+    this._config = configService.config
     this._vm = vm
   },
   methods: {

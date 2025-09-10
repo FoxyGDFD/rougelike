@@ -5,7 +5,7 @@ var ItemStrategy = $import('./item.strategy')
 var HealthPotion = ItemStrategy.extends({
   constructor: function (stats) {
     this.healAmount = stats.healAmount
-    HealthPotion.__super__.constructor.call(this, TILE_TYPES.heal, true)
+    ItemStrategy.call(this, TILE_TYPES.heal, true)
   },
   methods: {
     execute: function (playerVM) {

@@ -29,7 +29,7 @@ function bootstrap() {
   var mapModel = MapModel.createNew(configService).generateMap()
   MapView.createNew(mapSelector, mapModel, configService).renderMap()
   // eslint-disable-next-line no-console
-  console.log(mapModel.getMap())
+  console.log(mapModel.map)
 
   var inventoryModel = PlayerInventoryModel.createNew()
   PlayerInventoryView(inventorySelector, inventoryModel)

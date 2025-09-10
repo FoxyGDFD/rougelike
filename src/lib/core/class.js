@@ -4,6 +4,18 @@
  */
 var Class = function () {
   /**
+   * @typedef {Function & { extends: Function, inject: Function, __super__?: any }} ClassConstructor
+   */
+  /**
+   * @typedef {Object} ClassDefinition
+   * @property {Function} [constructor]
+   * @property {Object.<string, Function>} [methods]
+   * @property {Object.<string, Function>} [static]
+   * @property {Object.<string, PropertyDescriptor>} [properties]
+   * @property {Object.<string, PropertyDescriptor>} [staticProperties]
+   */
+
+  /**
    * Фабрика для создания классов
    */
   function create(definition) {
@@ -56,7 +68,7 @@ var Class = function () {
     _applyStaticMethods(childStaticMethods, childConstructor)
     _applyInstanceMethods(childInstanceMethods, childConstructor)
 
-    childConstructor.extend = function (grandChildDefinition) {
+    childConstructor.extends = function (grandChildDefinition) {
       return _extends.call(this, grandChildDefinition)
     }
 
