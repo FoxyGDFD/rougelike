@@ -34,30 +34,20 @@ function bootstrap() {
   var inventoryModel = PlayerInventoryModel.createNew()
   PlayerInventoryView(inventorySelector, inventoryModel)
 
-  var playerVM = PlayerVM.createNew(
-    PlayerModel.createNew(mapModel, { inventoryModel: inventoryModel })
-  )
+  var playerModel = PlayerModel.createNew(mapModel, {
+    inventoryModel: inventoryModel,
+  })
+
+  var playerVM = PlayerVM.createNew(playerModel)
   PlayerView.createNew(playerVM, configService).render('.field')
   new PlayerController(playerVM)
   new PlayerInventoryController(inventoryModel)
 
-  // TODO: remove
-  var damageBtn = playerSelector.querySelector('.damage-btn')
-  var healBtn = playerSelector.querySelector('.heal-btn')
-  var goldBtn = playerSelector.querySelector('.gold-btn')
+  var TestCharacterButtonsView = $import('@ui/interface/test-buttons.js')
 
-  if (damageBtn)
-    damageBtn.addEventListener('click', function () {
-      playerVM.decreaseHealth(10)
-    })
-  if (healBtn)
-    healBtn.addEventListener('click', function () {
-      playerVM.increaseHealth(5)
-    })
-  if (goldBtn)
-    goldBtn.addEventListener('click', function () {
-      playerVM.addGold(50)
-    })
+  playerSelector.appendChild(
+    new TestCharacterButtonsView(playerSelector, playerVM).render()
+  )
 }
 
 bootstrap()

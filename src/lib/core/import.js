@@ -85,7 +85,7 @@ function loadFileSync(filePath) {
 /**
  * Загрузка модуля по полному пути
  */
-function loadModule(fullPath, requestPath) {
+function loadModule(fullPath) {
   if (moduleCache[fullPath]) {
     return moduleCache[fullPath]
   }
@@ -104,7 +104,7 @@ function loadModule(fullPath, requestPath) {
       break
 
     case 'js':
-      result = loadJSModule(file, fullPath, requestPath)
+      result = loadJSModule(file, fullPath)
       break
 
     default:
@@ -124,7 +124,7 @@ function $import(requestPath, parentDir) {
   }
 
   var fullPath = window.resolvePath(requestPath, parentDir)
-  return loadModule(fullPath, requestPath)
+  return loadModule(fullPath)
 }
 
 window.$import = $import
