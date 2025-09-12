@@ -3,7 +3,9 @@
 var moduleCache = {}
 
 /**
- * Загрузка HTML файла и преобразование в DOM элементы
+ * Load HTML file
+ * @param {string} code HTML string
+ * @param {string} fullPath file absolute path
  */
 function loadHTMLModule(code, fullPath) {
   try {
@@ -14,7 +16,9 @@ function loadHTMLModule(code, fullPath) {
 }
 
 /**
- * Загрузка JSON файла
+ * Parse JSON module
+ * @param {string} code JSON string
+ * @param {string} fullPath file absolute path
  */
 function loadJSONModule(code, fullPath) {
   try {
@@ -25,7 +29,10 @@ function loadJSONModule(code, fullPath) {
 }
 
 /**
- * Загрузка JavaScript модуля
+ * loading js module
+ * @param {string} code string js code
+ * @param {string} fullPath file absolute path
+ * @returns {Object} module.exports of loaded and evaluated module
  */
 function loadJSModule(code, fullPath) {
   var moduleExports = {}
@@ -65,8 +72,9 @@ function loadJSModule(code, fullPath) {
 }
 
 /**
- * Синхронная загрузка файла
- * @param {string} filePath - абсолютный путь до файла
+ * fetch file by path synchronously
+ * @param {string} filePath absolute file path
+ * @returns {string} text file content
  */
 function loadFileSync(filePath) {
   var xhr = new XMLHttpRequest()
@@ -83,7 +91,9 @@ function loadFileSync(filePath) {
 }
 
 /**
- * Загрузка модуля по полному пути
+ * fetch module by absolute path
+ *  @param {string} fullPath absolute file path
+ *  @returns {string | Object} HTML string, parsed JSON or module.exports of loaded and evaluated module
  */
 function loadModule(fullPath) {
   if (moduleCache[fullPath]) {
@@ -116,7 +126,12 @@ function loadModule(fullPath) {
 }
 
 /**
- * Основная функция импорта
+ * import module path
+ * supports JSON, js and HTML files
+ * @template T
+ * @param {string} requestPath
+ * @param {string} [parentDir]
+ * @returns {T}
  */
 function $import(requestPath, parentDir) {
   if (!requestPath) {

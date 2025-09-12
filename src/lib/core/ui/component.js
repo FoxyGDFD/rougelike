@@ -1,8 +1,10 @@
+/** @typedef {import('@core/class').ClassConstructor} ClassConstructor */
 var Class = $import('@core/class')
-var { effect } = $import('@core/signal')
+var effect = $import('@core/signal').effect
 
 var templateCache = {}
 
+/** @type {ClassConstructor} */
 var Component = Class({
   constructor: function (templateUrl) {
     this._templateUrl = templateUrl
@@ -30,7 +32,7 @@ var Component = Class({
 
     _parseTemplate: function (templateString) {
       var tempDiv = document.createElement('div')
-      tempDiv.innerHTML = templateString.trim();
+      tempDiv.innerHTML = templateString.trim()
 
       return tempDiv.firstChild
     },

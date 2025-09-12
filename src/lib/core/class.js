@@ -1,25 +1,59 @@
 /**
- * Фабрика для создания классов с поддержкой наследования, миксинов и инъекций методов
- * @namespace
+ * @typedef {Object} PropertyDefinition
+ * @property {() => any} [get]
+ * @property {(value: any) => void} [set]
+ * @property {boolean} [enumerable]
+ * @property {boolean} [configurable]
+ */
+
+/**
+ * @typedef {Object} ClassDefinition
+ * @property {Function} [constructor]
+ * @property {Object.<string, Function>} [methods]
+ * @property {Object.<string, Function>} [static]
+ * @property {Object.<string, PropertyDefinition>} [properties]
+ * @property {Object.<string, PropertyDefinition>} [staticProperties]
+ */
+
+/**
+ * @callback ExtendsFunction
+ * @param {ClassDefinition} definition
+ * @returns {ClassConstructor}
+ */
+
+/**
+ * @callback InjectFunction
+ * @param {Object.<string, Function>} methods
+ * @returns {ClassConstructor}
+ */
+
+/**
+ * @typedef {Function & {
+ *   extends: ExtendsFunction,
+ *   inject: InjectFunction,
+ *   prototype: Object
+ * }} ClassConstructor
+ */
+
+/**
+ * @typedef {Function & {
+ *   inject: (constructor: ClassConstructor, methods: Object.<string, Function>) => ClassConstructor,
+ *   mixin: <T extends Object, S extends Object>(target: T, source: S) => T & S
+ * }} ClassFactory
+ */
+
+/**
+ * @type {() => ClassFactory}
  */
 var Class = function () {
   /**
-   * @typedef {Function & { extends: Function, inject: Function, __super__?: any }} ClassConstructor
-   */
-  /**
-   * @typedef {Object} ClassDefinition
-   * @property {Function} [constructor]
-   * @property {Object.<string, Function>} [methods]
-   * @property {Object.<string, Function>} [static]
-   * @property {Object.<string, PropertyDescriptor>} [properties]
-   * @property {Object.<string, PropertyDescriptor>} [staticProperties]
-   */
-
-  /**
-   * Фабрика для создания классов
+   * @param {ClassDefinition} definition
+   * @returns {ClassConstructor}
    */
   function create(definition) {
-    var constructor = definition.constructor || function () { }
+    var constructor = /** @type {any} */ (
+      definition.constructor || function () { }
+    )
     var staticMethods = definition.static || {}
     var instanceMethods = definition.methods || {}
     var properties = definition.properties || {}
@@ -38,17 +72,16 @@ var Class = function () {
     _applyStaticMethods(staticMethods, constructor)
     _applyInstanceMethods(instanceMethods, constructor)
 
-    return constructor
+    return /** @type {ClassConstructor} */ constructor
   }
 
   /**
-   * Расширяет текущий класс, создавая дочерний класс
-   * @param {Object} childDefinition - Определение дочернего класса
-   * @returns {Function} Дочерний конструктор класса
-   * @private
+   * @this {ClassConstructor}
+   * @param {ClassDefinition} childDefinition
+   * @returns {ClassConstructor}
    */
   function _extends(childDefinition) {
-    var parentConstructor = this
+    var parentConstructor = /** @type {ClassConstructor} */ this
     var childStaticMethods = childDefinition.static || {}
     var childInstanceMethods = childDefinition.methods || {}
     var childProperties = childDefinition.properties || {}
@@ -56,6 +89,7 @@ var Class = function () {
     var childConstructor =
       childDefinition.constructor ||
       function () {
+        // @ts-ignore
         parentConstructor.apply(this, arguments)
       }
 
@@ -68,34 +102,26 @@ var Class = function () {
     _applyStaticMethods(childStaticMethods, childConstructor)
     _applyInstanceMethods(childInstanceMethods, childConstructor)
 
+    // @ts-ignore
     childConstructor.extends = function (grandChildDefinition) {
       return _extends.call(this, grandChildDefinition)
     }
 
+    // @ts-ignore
     childConstructor.inject = function (methods) {
       return _inject.call(this, methods)
     }
 
-    childConstructor.__super__ = parentConstructor.prototype
-
+    // @ts-ignore
     return childConstructor
   }
 
-  /**
-   * Внедряет методы в прототип класса
-   * @param {Object} methods - Объект с методами для внедрения
-   * @returns {Function} Текущий конструктор класса
-   * @private
-   */
+  /** @param {Object.<string, Function>} methods */
   function _inject(methods) {
     _applyInstanceMethods(methods, this)
     return this
   }
-
   /**
-   * Применяет свойства с геттерами/сеттерами к прототипу класса
-   * @param {Object} properties - Объект с определениями свойств
-   * @param {Function} constructor - Конструктор класса
    * @private
    */
   function _applyProperties(properties, constructor) {
@@ -111,9 +137,6 @@ var Class = function () {
   }
 
   /**
-   * Применяет статические свойства с геттерами/сеттерами к конструктору класса
-   * @param {Object} properties - Объект с определениями свойств
-   * @param {Function} constructor - Конструктор класса
    * @private
    */
   function _applyStaticProperties(properties, constructor) {
@@ -129,9 +152,6 @@ var Class = function () {
   }
 
   /**
-   * Применяет методы экземпляра к прототипу класса
-   * @param {Object} methods - Объект с методами
-   * @param {Function} constructor - Конструктор класса
    * @private
    */
   function _applyInstanceMethods(methods, constructor) {
@@ -141,9 +161,6 @@ var Class = function () {
   }
 
   /**
-   * Применяет статические методы к конструктору класса
-   * @param {Object} methods - Объект со статическими методами
-   * @param {Function} constructor - Конструктор класса
    * @private
    */
   function _applyStaticMethods(methods, constructor) {
@@ -153,9 +170,6 @@ var Class = function () {
   }
 
   /**
-   * Наследует прототип дочернего класса от родительского
-   * @param {Function} childClass - Дочерний конструктор
-   * @param {Function} parentClass - Родительский конструктор
    * @private
    */
   function _inherit(childClass, parentClass) {
@@ -164,9 +178,6 @@ var Class = function () {
   }
 
   /**
-   * Наследует статические свойства и методы
-   * @param {Function} childClass - Дочерний конструктор
-   * @param {Function} parentClass - Родительский конструктор
    * @private
    */
   function _inheritStatic(childClass, parentClass) {
@@ -176,7 +187,6 @@ var Class = function () {
       'prototype',
       'extends',
       'inject',
-      '__super__',
     ]
     Object.getOwnPropertyNames(parentClass).forEach(function (propName) {
       if (!notInheredProperties.includes(propName)) {
@@ -188,12 +198,9 @@ var Class = function () {
 
   /**
    * Внедряет методы в существующий конструктор класса
-   * @static
-   * @param {Function} constructor - Конструктор класса для расширения
-   * @param {Object} methods - Методы для внедрения в прототип
-   * @returns {Function} Расширенный конструктор
-   * @example
-   * Class.inject(MyClass, { newMethod: function() {} });
+   * @param {ClassConstructor} constructor
+   * @param {Object.<string, Function>} methods
+   * @returns {ClassConstructor}
    */
   create.inject = function (constructor, methods) {
     return _inject.call(constructor, methods)
@@ -201,23 +208,21 @@ var Class = function () {
 
   /**
    * Примешивает свойства и методы из source в target (кроме constructor и prototype)
-   * @static
-   * @param {Object} target - Целевой объект
-   * @param {Object} source - Источник для примешивания
-   * @returns {Object} Модифицированный целевой объект
-   * @example
-   * Class.mixin(targetObj, sourceObj);
+   * @template T, S
+   * @param {T} target
+   * @param {S} source
+   * @returns {T & S}
    */
   create.mixin = function (target, source) {
     Object.keys(source).forEach(function (key) {
       if (key !== 'constructor' && key !== 'prototype') {
-        target[key] = source[key]
+        /** @type {any} */ target[key] = /** @type {any} */ (source)[key]
       }
     })
-    return target
+    return /** @type {T & S} */ (target)
   }
 
-  return create
+  return /** @type {ClassFactory} */ create
 }
 
 module.exports = Class()

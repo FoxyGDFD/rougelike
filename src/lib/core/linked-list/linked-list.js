@@ -23,7 +23,7 @@ var LinkedList = Class({
       if (!this.head) {
         this.head = node
         this.tail = node
-        node.next = node // цикличный список
+        node.next = node
         node.prev = node
       } else {
         node.prev = this.tail

@@ -1,13 +1,12 @@
 /**
- * Объединяет части пути в единый путь
- * @param {...string} parts - части пути
- * @returns {string} объединенный путь
+ * Joins strings with /
+ * @param {...string} parts splitted path parts
+ * @returns {string} joined path
  */
 function joinPath() {
   var parts = []
   for (var i = 0; i < arguments.length; i++) {
     if (arguments[i]) {
-      // Убираем ведущие и завершающие слеши
       var part = arguments[i].replace(/^\/+|\/+$/g, '')
       if (part) {
         parts.push(part)
@@ -18,10 +17,10 @@ function joinPath() {
 }
 
 /**
- * Разрешает относительный путь относительно базового
- * @param {string} basePath - базовый путь (директория)
- * @param {string} relativePath - относительный путь
- * @returns {string} абсолютный путь
+ * Resolve relative path with base path
+ * @param {string} basePath - parent module dir
+ * @param {string} relativePath - relative path
+ * @returns {string} absolute path
  */
 function resolveRelativePath(basePath, relativePath) {
   if (!basePath) {
@@ -52,9 +51,9 @@ function resolveRelativePath(basePath, relativePath) {
 }
 
 /**
- * Разрешает алиас в абсолютный путь
- * @param {string} requestPath - путь с алиасом (например: 'components/Button')
- * @returns {string} абсолютный путь
+ * Resolving aliases to absolute paths
+ * @param {string} requestPath - path with alias (Example: '@components/Button')
+ * @returns {string} absolute path
  */
 function resolveAlias(requestPath) {
   if (!requestPath) {
@@ -88,9 +87,9 @@ function resolveAlias(requestPath) {
 }
 
 /**
- * Проверяет, есть ли у пути известное расширение файла
- * @param {string} path - путь для проверки
- * @returns {boolean} true если есть известное расширение
+ * Check known file extension
+ * @param {string} path file path
+ * @returns {boolean} true if file has known extension
  */
 function hasKnownExtension(path) {
   var filename = path.split('/').pop()
@@ -115,10 +114,10 @@ function hasKnownExtension(path) {
 }
 
 /**
- * Основная функция разрешения путей
- * @param {string} requestPath - запрашиваемый путь
- * @param {string} [parentDir] - директория родительского модуля
- * @returns {string} абсолютный путь к файлу
+ * Resolve path function
+ * @param {string} requestPath - absolute, relative or alias path
+ * @param {string} [parentDir] - path of paren module
+ * @returns {string} absolute file path
  */
 function resolvePath(requestPath, parentDir) {
   if (!requestPath) {
@@ -138,17 +137,14 @@ function resolvePath(requestPath, parentDir) {
     fullPath = resolveAlias(requestPath)
   }
 
-  // Если уже есть известное расширение - не добавляем .js
   if (hasKnownExtension(fullPath)) {
     return fullPath
   }
 
-  // Если есть точка, но неизвестное расширение - добавляем .js
   if (fullPath.includes('.')) {
     return fullPath + '.js'
   }
 
-  // Если нет расширения - добавляем .js
   return fullPath + '.js'
 }
 
